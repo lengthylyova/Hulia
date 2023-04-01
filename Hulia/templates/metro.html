@@ -5,39 +5,52 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	{% load static %}
 	<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Dosis:wght@200;600&display=swap" rel="stylesheet">
 	<script src="../../static/metro.js"></script>
 	<title>Hulia-{{city}}</title>
 </head>
 <body>
+	<section>
+		<h2 class="title">METRO <span id="city">{{city}}</span></h2>
 		<div class="block">
-			<h2>METRO <span id="city">{{city}}</span></h2>
-			<div class="drops">
-				<div class="lists">
-					<div id="dropdown1" class="dropdown">
+			<div class="half" id="left">
+				<div class="stations">
+					<div class="list" id="from_list">
 						{% for st in stations %}
-							<button class="station" id="{{st}}1" onclick="fill_input(id)">{{st}}</button>
+							<button class="station" id="from_{{st}}" onclick="fill_input(id)">{{st}}</button>
 						{% endfor %}
 					</div>
-					<div id="dropdown2" class="dropdown">
-						{% for st in stations %}
-							<button class="station" id="{{st}}2" onclick="fill_input(id)">{{st}}</button>
-						{% endfor %}
+					<div class="from_to">
+						<input type="text" id="from_input" placeholder="From..." onkeyup="filterFunction()">	
 					</div>
 				</div>
-				<div class="inputs">
-					<p>Try to find route.</p>
-					<input type="text" placeholder="From..." id="input1" onkeyup="filterFunction()">
-					<input type="text" placeholder="To..." id="input2" onkeyup="filterFunction()">
-					<div class="searchblock">
-						<button id="submit" onclick="get_route()">___find___</button>
-						<ul style="text-align: left; list-style-type: none; width: 100%;">
-							<li id="time"></li>
-							<li id="transfers"></li>
-							<li id="path"></li>
-						</ul>
+				<div class="stations">
+					<div class="list" id="to_list">
+						{% for st in stations %}
+							<button class="station" id="to_{{st}}" onclick="fill_input(id)">{{st}}</button>
+						{% endfor %}
 					</div>
+					<div class="from_to">
+						<input type="text" id="to_input" placeholder="To..." onkeyup="filterFunction()">
+					</div>
+				</div>
+				<div class="press">
+					<input type="button" onclick="get_route()" value="GET ROUTE">
+				</div>
+				<div class="result" id="result">
+					<ul class="result_list" style="overflow-y: scroll;">
+						<li id="time">time:</li>
+						<li id="transfers">transfers:</li>
+						<li id="route">route:</li>
+					</ul>
 				</div>
 			</div>
+			<div class="half" id="right">
+				<img src="../../static/spb_map.png">
+			</div>
 		</div>
+	</section>
 </body>
 </html>

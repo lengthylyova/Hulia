@@ -1,38 +1,44 @@
 function filterFunction() {
-	var input, filter, ul, li, a, i;
-	input1 = document.getElementById("input1");
-	input2 = document.getElementById("input2");
-	filter1 = input1.value.toUpperCase();
-	filter2 = input2.value.toUpperCase();
-	div1 = document.getElementById("dropdown1");
-	div2 = document.getElementById("dropdown2");
-	btns1 = div1.getElementsByTagName("button");
-	btns2 = div2.getElementsByTagName("button");
-	for (i = 0; i < btns1.length; i++) {
-		txtValue1 = btns1[i].textContent || btns1[i].innerText;
-		txtValue2 = btns2[i].textContent || btns2[i].innerText;
-		if (txtValue1.toUpperCase().indexOf(filter1) > -1) {
-			btns1[i].style.display = "";
+	from = document.getElementById("from_input");
+	to = document.getElementById("to_input");
+
+	from_filter = from.value.toUpperCase();
+	to_filter = to.value.toUpperCase();
+
+	from_list = document.getElementById("from_list");
+	to_list = document.getElementById("to_list");
+
+	from_btns = from_list.getElementsByClassName("station");
+	to_btns = to_list.getElementsByClassName("station");
+
+	for (i = 0; i < from_btns.length; i++) {
+		txtValue1 = from_btns[i].textContent || from_btns[i].innerText;
+		txtValue2 = to_btns[i].textContent || to_btns[i].innerText;
+		if (txtValue1.toUpperCase().indexOf(from_filter) > -1) {
+			from_btns[i].style.display = "";
 		} else {
-			btns1[i].style.display = "none";
+			from_btns[i].style.display = "none";
 		}
-		if (txtValue2.toUpperCase().indexOf(filter2) > -1) {
-			btns2[i].style.display = "";
+		if (txtValue2.toUpperCase().indexOf(to_filter) > -1) {
+			to_btns[i].style.display = "";
 		} else {
-		  	btns2[i].style.display = "none";
+		  	to_btns[i].style.display = "none";
 		}
 	}
 }
 
 function fill_input(id) {
-	let input = document.getElementById("input"+id[id.length-1])
-	input.value = id.slice(0, -1)
+	let input_id = id.split('_')[0] + "_input"
+	let name = id.split('_')[1]
+	let input = document.getElementById(input_id)
+	input.value = name
+	filterFunction();
 }
 
 
 function get_route() {
-	let from = document.getElementById('input1').value
-	let to = document.getElementById('input2').value
+	let from = document.getElementById('from_input').value
+	let to = document.getElementById('to_input').value
 	let city = document.getElementById('city').innerHTML
 
 	let promise = fetch("/"+city+"/route/", {
@@ -51,12 +57,22 @@ function get_route() {
 
   	promise.then((data) => {
   		if (data["success"] != false) {
-  			let time = document.getElementById("time")
-	  		time.innerHTML = "<b>TOTAL TIME:</b> " + data["data"]["time"] + " min."
-	  		let transfers = document.getElementById("transfers")
-	  		transfers.innerHTML = "<b>TRANSFERS:</b> " + data["data"]["transfers"] + "."
-	  		let path = document.getElementById("path")
-	  		path.innerHTML = "<b>PATH</b>: <i>" + data["data"]["route"] + "</i>."
+  			let result = document.getElementById("result")
+
+  			let time_li = document.getElementById("time")
+	  		time_li.innerHTML = "time: " + data["data"]["time"] + " min."
+
+	  		let transfers_li = document.getElementById("transfers")
+	  		transfers_li.innerHTML = "transfers: " + data["data"]["transfers"] + "."
+
+	  		let route_li = document.getElementById("route")
+	  		let route = data["data"]["route"]
+	  		route.innerHTML = "route:"
+
+	  		for (var i = 0; i < data["data"]["route"].length - 1; i++) {
+	  			route_li.innerHTML = route_li.innerHTML + " " + route[i] + ", ";
+	  		}
+	  		route_li.innerHTML = route_li.innerHTML + route[route.length-1] + ".";
   		} else {
   			alert('something wrong')
   		}
